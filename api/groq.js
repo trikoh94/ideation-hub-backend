@@ -109,30 +109,34 @@ async function generateIdea(req) {
 
 // Main handler
 module.exports = async (req, res) => {
-  // Handle CORS
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     return res.status(204).end();
   }
 
   try {
     // Get the endpoint from the URL path
     const path = req.url.split('?')[0];
+    console.log('Request path:', path); // Add logging
 
     // Route to appropriate handler
     if (path === '/api/test') {
       const result = await testEndpoint();
-      return res.status(result.status).json(result.data);
-    } else if (path === '/api/generate-idea') {
+      return res.status(200).json(result);
+    } else if (path === '/api/generate-idea' || path === '/api/groq') {
       const result = await generateIdea(req);
-      return res.status(result.status).json(result.data);
+      return res.status(200).json(result);
     } else {
-      return res.status(404).json({ error: 'Endpoint not found' });
+      console.log('404 Not Found:', path); // Add logging
+      return res.status(404).json({ error: 'Endpoint not found', path });
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error); // Add logging
     return res.status(500).json({ error: error.message || 'Internal server error' });
   }
 }; 

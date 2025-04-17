@@ -8,16 +8,14 @@
   ],
   "routes": [
     {
-      "src": "/api/test",
-      "dest": "api/groq.js"
-    },
-    {
-      "src": "/api/generate-idea",
-      "dest": "api/groq.js"
-    },
-    {
-      "src": "/api/groq",
-      "dest": "api/groq.js"
+      "src": "/api/(.*)",
+      "dest": "/api/groq.js",
+      "methods": ["GET", "POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     }
   ]
 } 
