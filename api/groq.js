@@ -64,27 +64,14 @@ async function testEndpoint() {
 // Generate idea endpoint
 async function generateIdea(req) {
   try {
-    const { category, keywords } = await req.json();
+    const { prompt } = await req.json();
 
-    if (!category || !keywords) {
+    if (!prompt) {
       return jsonResponse(
-        { error: 'Category and keywords are required' },
+        { error: 'Prompt is required' },
         400
       );
     }
-
-    const prompt = `Generate a business idea based on the following criteria:
-Category: ${category}
-Keywords: ${keywords}
-
-Please provide a response in the following JSON format:
-{
-  "businessName": "Creative name for the business",
-  "description": "Brief description of the business idea",
-  "targetMarket": "Description of the target market",
-  "keyFeatures": ["Feature 1", "Feature 2", "Feature 3"],
-  "revenueStreams": ["Revenue stream 1", "Revenue stream 2"]
-}`;
 
     const response = await fetch('https://api.groq.com/v1/chat/completions', {
       method: 'POST',
@@ -114,8 +101,7 @@ Please provide a response in the following JSON format:
     }
 
     const data = await response.json();
-    const idea = JSON.parse(data.choices[0].message.content);
-    return jsonResponse(idea);
+    return jsonResponse(data);
   } catch (error) {
     return handleError(error);
   }
