@@ -1,0 +1,17 @@
+{
+  "name": "ideation-hub-backend",
+  "version": "1.0.0",
+  "description": "Backend for Ideation Hub application",
+  "private": true,
+  "scripts": {
+    "start": "node api/groq.js",
+    "dev": "node api/groq.js"
+  },
+  "dependencies": {
+    "groq-sdk": "^0.3.0",
+    "dotenv": "^16.0.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
