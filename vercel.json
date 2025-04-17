@@ -8,7 +8,11 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/test",
+      "dest": "api/groq.js"
+    },
+    {
+      "src": "/api/generate-idea",
       "dest": "api/groq.js"
     }
   ]

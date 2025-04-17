@@ -122,25 +122,31 @@ Please provide a response in the following JSON format:
 }
 
 // Main handler
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Handle CORS
-  const corsResponse = handleCors(req);
-  if (corsResponse) return corsResponse;
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return res.status(204).end();
+  }
 
   try {
-    // Parse the URL to determine the endpoint
-    const url = new URL(req.url);
-    const path = url.pathname;
+    // Get the endpoint from the URL path
+    const path = req.url.split('?')[0];
 
     // Route to appropriate handler
     if (path === '/api/test') {
-      return await testEndpoint();
+      const result = await testEndpoint();
+      return res.status(result.status).json(result.data);
     } else if (path === '/api/generate-idea') {
-      return await generateIdea(req);
+      const result = await generateIdea(req);
+      return res.status(result.status).json(result.data);
     } else {
-      return jsonResponse({ error: 'Endpoint not found' }, 404);
+      return res.status(404).json({ error: 'Endpoint not found' });
     }
   } catch (error) {
-    return handleError(error);
+    console.error('Error:', error);
+    return res.status(500).json({ error: error.message || 'Internal server error' });
   }
-} 
+}; 
