@@ -1,5 +1,7 @@
 {
   "framework": "nextjs",
+  "buildCommand": "next build",
+  "devCommand": "next dev",
   "env": {
     "GROQ_API_KEY": "@groq_api_key"
   }
