@@ -16,10 +16,17 @@ const corsHeaders = {
 
 function validateApiKey(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
+  console.log('Auth header:', authHeader);
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('Invalid auth header format');
     return false;
   }
+  
   const apiKey = authHeader.split(' ')[1];
+  console.log('API key from request:', apiKey);
+  console.log('API key from env:', process.env.GROQ_API_KEY);
+  
   return apiKey === process.env.GROQ_API_KEY;
 }
 
