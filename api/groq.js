@@ -38,29 +38,6 @@ const handleError = (error) => {
   );
 };
 
-// Test endpoint to verify API connection
-async function testEndpoint() {
-  try {
-    const response = await fetch('https://api.groq.com/v1/models', {
-      headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Groq API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return jsonResponse({ 
-      message: 'Groq API connection successful',
-      availableModels: data.data.map(model => model.id)
-    });
-  } catch (error) {
-    return handleError(error);
-  }
-}
-
 // Generate idea endpoint
 async function generateIdea(req) {
   try {
@@ -80,7 +57,7 @@ async function generateIdea(req) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'mixtral-8x7b-32768',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           {
             role: 'system',
@@ -122,21 +99,20 @@ module.exports = async (req, res) => {
   try {
     // Get the endpoint from the URL path
     const path = req.url.split('?')[0];
-    console.log('Request path:', path); // Add logging
+    console.log('Request path:', path);
 
     // Route to appropriate handler
     if (path === '/api/test') {
-      const result = await testEndpoint();
-      return res.status(200).json(result);
+      return res.status(200).json({ message: 'API is working!' });
     } else if (path === '/api/generate-idea' || path === '/api/groq') {
       const result = await generateIdea(req);
       return res.status(200).json(result);
     } else {
-      console.log('404 Not Found:', path); // Add logging
+      console.log('404 Not Found:', path);
       return res.status(404).json({ error: 'Endpoint not found', path });
     }
   } catch (error) {
-    console.error('Error:', error); // Add logging
+    console.error('Error:', error);
     return res.status(500).json({ error: error.message || 'Internal server error' });
   }
 }; 
