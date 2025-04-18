@@ -4,6 +4,11 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+console.log('Environment variables loaded:', {
+  GROQ_API_KEY: process.env.GROQ_API_KEY ? 'Set (not showing for security)' : 'Not set',
+  NODE_ENV: process.env.NODE_ENV,
+});
+
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
